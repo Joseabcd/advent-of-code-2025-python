@@ -49,3 +49,58 @@ print(invalid_sum)
 # Part 2
 # ------------------------------------------------------------
 
+def min_prime_factors(n):
+  factors = [0] * (n + 1)
+  i = 2
+  while (i * i < n):
+    if (factors[i] != 0):
+      i += 1
+      continue
+    j = 2
+    while (i * j <= n):
+      if (factors[i * j] == 0):
+        factors[i * j] = i
+      j += 1
+    i += 1
+  return factors
+
+def block_sizes(x, factors):
+  sizes = []
+  if (factors[x] == 0):  # if prime
+    sizes += [1]
+  else:
+    quotient = x // factors[x]
+    sizes += [quotient]
+    if (quotient % factors[x] != 0):
+      sizes += [factors[x]]
+  return sizes
+
+
+max_id = max([r[1] for r in range_list])
+max_id_len = len(str(max_id))
+factors = min_prime_factors(max_id_len)
+
+invalid_sum = 0
+for (left, right) in range_list:
+  l0, l1 = len(str(left)), len(str(right))
+  l0 = max(l0, 2)  # length-one IDs need not be checked
+  for l in range(l0, l1 + 1):
+    sizes = block_sizes(l, factors)
+    already_added = {}
+    for k in sizes:
+      generator = 10 ** (k - 1)
+      if (l == l0):
+        generator = max(generator, int(str(left)[ : k]))
+        if (int(str(generator) * (l // k)) < left):
+          generator += 1
+      max_generator = (10 ** k) - 1
+      while (generator <= max_generator):
+        cur = int(str(generator) * (l // k))
+        if (cur > right):
+          break
+        if (not already_added.get(cur, False)):
+          invalid_sum += cur
+          already_added[cur] = True
+        generator += 1
+
+print(invalid_sum)
