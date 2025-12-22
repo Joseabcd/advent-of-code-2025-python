@@ -23,9 +23,9 @@ for bank in bank_list:
       p1 = p0 + 1
     elif bank[p] > bank[p1]:
       p1 = p
-      if bank[p1] == 9:
+      if bank[p1] == '9':
         break
-  cur_jolts = int(str(bank[p0]) + str(bank[p1]))
+  cur_jolts = int(bank[p0] + bank[p1])
   total_jolts += cur_jolts
 
 print(total_jolts)
